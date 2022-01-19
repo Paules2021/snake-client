@@ -1,21 +1,26 @@
-const net = require("net");
 
-// establishes a connection with the game server
-const connect = function () {
-  const conn = net.createConnection({
-    host: "165.227.47.243",
-    port: "50541"
+const connect = require('./client');
+const setupInput = require('./input');
+
+const printServerData = conn => {
+  conn.on('data', (data) => {
+    console.log("DATA CAME IN!!!!!");
+    console.log(data);
   });
+};
 
-  // interpret incoming data as text
-  conn.setEncoding("utf8");
-  conn.on('connect', () => {
-    console.log("Successfully connected to game server!");
-  });
-
-
-  return conn;
+const setSnakeName = conn => {
+  conn.write("Name: PE");
 };
 
 console.log("Connecting ...");
-connect();
+const conn = connect();
+
+// interpret incoming data as text
+conn.setEncoding("utf8");
+
+setSnakeName(conn);
+
+setupInput(conn);
+
+printServerData(conn);
